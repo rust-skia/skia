@@ -10,7 +10,7 @@ import os
 import shutil
 import stat
 import sys
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
@@ -29,7 +29,7 @@ def sha1_of_file(path):
 
 if sha1_of_file(dst) != sha1:
   with open(dst, 'wb') as f:
-    f.write(urllib2.urlopen('https://chromium-gn.storage-download.googleapis.com/' + sha1).read())
+    f.write(urllib.request.urlopen('https://chromium-gn.storage-download.googleapis.com/' + sha1).read())
 
   os.chmod(dst, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
                 stat.S_IRGRP                | stat.S_IXGRP |

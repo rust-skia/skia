@@ -167,7 +167,7 @@ def git_checkout_to_directory(git, repo, checkoutable, directory, verbose):
 
 def parse_file_to_dict(path):
   dictionary = {}
-  execfile(path, dictionary)
+  exec(compile(open(path, "rb").read(), path, 'exec'), dictionary)
   return dictionary
 
 
@@ -191,7 +191,7 @@ def git_sync_deps(deps_file_path, command_line_os_requests, verbose):
   dependencies = deps_file['deps'].copy()
   os_specific_dependencies = deps_file.get('deps_os', dict())
   if 'all' in command_line_os_requests:
-    for value in os_specific_dependencies.itervalues():
+    for value in os_specific_dependencies.values():
       dependencies.update(value)
   else:
     for os_name in command_line_os_requests:
@@ -204,9 +204,9 @@ def git_sync_deps(deps_file_path, command_line_os_requests, verbose):
         raise Exception('%r is parent of %r' % (other_dir, directory))
   list_of_arg_lists = []
   for directory in sorted(dependencies):
-    if not isinstance(dependencies[directory], basestring):
+    if not isinstance(dependencies[directory], str):
       if verbose:
-        print 'Skipping "%s".' % directory
+        print('Skipping "%s".' % directory)
       continue
     if '@' in dependencies[directory]:
       repo, checkoutable = dependencies[directory].split('@', 1)
