@@ -65,6 +65,7 @@ if (skia_use_system_icu) {
   }
 
   third_party("icu") {
+    complete_static_lib = false
     public_include_dirs = [
       "../externals/icu/source/common",
       "../externals/icu/source/i18n",
