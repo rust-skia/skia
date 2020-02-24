@@ -23,6 +23,7 @@ if (skia_enable_skparagraph && skia_enable_skshaper && skia_enable_skunicode &&
   }
 
   skia_component("skparagraph") {
+    complete_static_lib = false
     import("skparagraph.gni")
     public_configs = [ ":public_config" ]
     public = skparagraph_core_public

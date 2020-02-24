@@ -2275,16 +2275,11 @@ if (is_canvaskit) {
 }
 
 group("modules") {
-  deps = [
-    "modules/bentleyottmann",
-    "modules/skottie",
-    "modules/skparagraph",
-    "modules/skshaper",
-    "modules/svg",
-  ]
-
-  if (is_canvaskit) {
-    deps += [ "modules/canvaskit" ]
+  # rust-skia: Only add modules/skparagraph if we do use icu for now, which prevents a linker error on macOS.
+  if (skia_use_icu) {
+    deps = [ "modules/skparagraph" ]
+  } else {
+    deps = []
   }
 }
 
