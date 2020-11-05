@@ -193,8 +193,11 @@ config("default") {
       _arch_flags = [
         "-arch",
         "arm64",
-        "-arch",
-        "arm64e",
+        # rust-skia:
+        # we can't produce multi architecture library archives, linking them always ends up with 
+        # libskia.a: file too small to be an archive
+        # "-arch",
+        # "arm64e",
       ]
     } else if (current_cpu == "x86") {
       _arch_flags = [
