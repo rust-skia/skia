@@ -9,6 +9,7 @@
 
 #if defined(_WIN32) && defined(SK_USING_THIRD_PARTY_ICU)
 bool SkLoadICU();
+extern "C" void C_SetICU(const void*);
 #else
 static inline bool SkLoadICU() { return true; }
 #endif  // defined(_WIN32) && defined(SK_USING_THIRD_PARTY_ICU)
