@@ -53,7 +53,7 @@ static void* win_mmap(const wchar_t* dataFile) {
     return addr;
 }
 
-static bool init_icu(void* addr) {
+static bool init_icu(const void* addr) {
     UErrorCode err = U_ZERO_ERROR;
     udata_setCommonData(addr, &err);
     if (err != U_ZERO_ERROR) {
@@ -109,11 +109,17 @@ static bool load_from(const std::wstring& dir) {
     return false;
 }
 
+static const void* addr = nullptr;
+
+extern "C" void C_SetICU(const void* addr_) {
+    addr = addr_;
+}
+
 bool SkLoadICU() {
-    static bool good = false;
     static std::once_flag flag;
+    static bool good = false;
     std::call_once(flag, []() {
-        good = load_from(executable_directory()) || load_from(library_directory());
+        good = (addr && init_icu(addr)) || load_from(executable_directory()) || load_from(library_directory());
     });
     return good;
 }
