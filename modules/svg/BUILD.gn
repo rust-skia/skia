@@ -12,6 +12,7 @@ if (skia_enable_svg && skia_use_expat) {
   }
 
   skia_component("svg") {
+    complete_static_lib = false
     check_includes = false
     import("svg.gni")
     public_configs = [ ":public_config" ]
