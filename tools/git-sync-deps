@@ -92,10 +92,12 @@ def is_git_toplevel(git, directory):
               is expected to be checked out.
   """
   try:
+    # rust-skia: use relative paths here, otherwise we might get OS specific absolute paths in
+    # return which breaks the comparison.
     toplevel = subprocess.check_output(
-      [git, 'rev-parse', '--show-toplevel'], cwd=directory).strip()
-    return (os.path.normcase(os.path.realpath(directory)) ==
-            os.path.normcase(os.path.realpath(toplevel.decode())))
+      [git, 'rev-parse', '--path-format=relative', '--show-toplevel'], cwd=directory).strip()
+    return (os.path.normcase(os.path.realpath(directory)) == 
+            os.path.normcase(os.path.realpath(os.path.join(directory, toplevel.decode()))))
   except subprocess.CalledProcessError:
     return False
 
