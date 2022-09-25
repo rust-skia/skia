@@ -681,7 +681,8 @@ GrMtlPipelineState* GrMtlPipelineStateBuilder::finalize(
     id<MTLRenderPipelineState> pipelineState;
     {
         TRACE_EVENT0("skia.shaders", "newRenderPipelineStateWithDescriptor");
-        if (@available(macOS 10.15, *)) {
+        // rust-skia: `___isPlatformVersionAtLeast` linker error.
+        if (false /* @available(macOS 10.15, *) */ ) {
             pipelineState = [fGpu->device() newRenderPipelineStateWithDescriptor: pipelineDescriptor
                                                                            error: &error];
         } else {

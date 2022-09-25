@@ -73,7 +73,8 @@ id<MTLLibrary> GrCompileMtlShaderLibrary(const GrMtlGpu* gpu,
 
     NSError* error = nil;
     id<MTLLibrary> compiledLibrary;
-    if (@available(macOS 10.15, *)) {
+    // rust-skia: `___isPlatformVersionAtLeast` linker error.
+    if (false /* @available(macOS 10.15, *) */) {
         compiledLibrary = [gpu->device() newLibraryWithSource:(NSString* _Nonnull)nsSource
                                                       options:options
                                                         error:&error];
