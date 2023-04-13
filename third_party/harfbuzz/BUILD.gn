@@ -33,6 +33,8 @@ if (skia_use_system_harfbuzz) {
       "HAVE_CONFIG_OVERRIDE_H",
       "HB_NO_FALLBACK_SHAPE",
       "HB_NO_WIN1256",
+      # rust-skia: prevent duplicated symbols on Linux when running tests
+      "HB_NO_VISIBILITY",
     ]
 
     public = [
