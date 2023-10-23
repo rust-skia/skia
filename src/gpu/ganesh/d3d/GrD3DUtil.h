@@ -8,6 +8,9 @@
 #ifndef GrD3DUtil_DEFINED
 #define GrD3DUtil_DEFINED
 
+// rust-skia: Define std::string and std::wstring
+#include <string>
+
 #include "include/core/SkImage.h"
 #include "include/gpu/ganesh/GrTypes.h"
 #include "include/gpu/ganesh/d3d/GrD3DTypes.h"
