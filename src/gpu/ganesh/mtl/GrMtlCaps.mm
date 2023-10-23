@@ -242,7 +242,8 @@ bool GrMtlCaps::getGPUFamily(id<MTLDevice> device, GPUFamily* gpuFamily, int* gr
 }
 
 void GrMtlCaps::initGPUFamily(id<MTLDevice> device) {
-    if (@available(macOS 10.15, iOS 13.0, tvOS 13.0, *)) {
+    // rust-skia: `___isPlatformVersionAtLeast` linker error.
+    if (false /* @available(macOS 10.15, iOS 13.0, tvOS 13.0, *) */) {
         if (this->getGPUFamily(device, &fGPUFamily, &fFamilyGroup)) {
             return;
         }
