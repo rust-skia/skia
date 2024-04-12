@@ -166,7 +166,7 @@ void SkShaperPrimitive::shape(const char* utf8,
                               SkScalar width,
                               RunHandler* handler) const {
     std::unique_ptr<FontRunIterator> fontRuns(
-            MakeFontMgrRunIterator(utf8, utf8Bytes, font, nullptr));
+            new TrivialFontRunIterator(font, utf8Bytes));
     if (!fontRuns) {
         return;
     }
