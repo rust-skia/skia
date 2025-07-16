@@ -25,7 +25,17 @@ with open(gnzip, 'wb') as f:
   rev = 'b2afae122eeb6ce09c52d63f67dc53fc517dbdc8'
   url = 'https://chrome-infra-packages.appspot.com/dl/gn/gn/{}-{}/+/git_revision:{}'.format(
           OS,cpu,rev)
-  f.write(urlopen(url).read())
+  try:
+    f.write(urlopen(url).read())
+  except Exception as e:
+    # Try amd64 for Windows arm64 as fallback
+    if OS == 'windows' and cpu == 'arm64':
+      cpu = 'amd64'
+      url = 'https://chrome-infra-packages.appspot.com/dl/gn/gn/{}-{}/+/git_revision:{}'.format(OS,cpu,rev)
+      f.write(urlopen(url).read())
+    else:
+      # Re-raise the original exception if we're not on Windows arm64
+      raise
 
 gn_filename = 'gn.exe' if 'win32' in sys.platform or 'msys' in sys.platform else 'gn'
 with zipfile.ZipFile(gnzip, 'r') as f:
