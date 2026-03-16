@@ -2099,6 +2099,7 @@ skia_component("skia") {
     ":ml3",
     ":ml4",
     ":ndk_images",
+    ":pathops",
     ":png_decode_rust",
     ":raw",
     ":rust_icc",
