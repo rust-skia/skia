@@ -9,9 +9,10 @@ if (is_canvaskit) {
 }
 
 declare_args() {
-  # The location of an activated emsdk. We default to the one brought in by
-  # DEPS and bin/activate-emsdk.
-  skia_emsdk_dir = rebase_path("../../third_party/externals/emsdk")
+  # The location of an activated emsdk.
+  # rust-skia: third_party/externals/emsdk is not present in this checkout,
+  # so this must be provided externally for wasm builds.
+  skia_emsdk_dir = ""
 }
 
 # Defines a WASM library target.
