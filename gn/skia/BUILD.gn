@@ -309,7 +309,8 @@ config("default") {
     }
   }
 
-  if (is_canvaskit) {
+  # rust-skia: only add emsdk sysroot when an explicit emsdk path is provided.
+  if (is_canvaskit && skia_emsdk_dir != "") {
     cflags += [ "--sysroot=$skia_emsdk_dir/upstream/emscripten/cache/sysroot" ]
     ldflags += [ "--sysroot=$skia_emsdk_dir/upstream/emscripten/cache/sysroot" ]
   }
@@ -835,10 +836,11 @@ if (is_wasm) {
     }
   } else {
     config("wasm") {
-      common = [
-        "--sysroot=$skia_emsdk_dir/upstream/emscripten/cache/sysroot",
-        "-pthread",
-      ]
+      common = [ "-pthread" ]
+      if (skia_emsdk_dir != "") {
+        # rust-skia: third_party emsdk is not guaranteed; keep sysroot optional.
+        common += [ "--sysroot=$skia_emsdk_dir/upstream/emscripten/cache/sysroot" ]
+      }
       cflags = common
       ldflags = common
       ldflags += [
