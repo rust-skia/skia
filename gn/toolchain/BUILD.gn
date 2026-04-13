@@ -479,7 +479,8 @@ if (is_wasm) {
     }
     link = cxx
 
-    if (!is_canvaskit) {
+    # rust-skia: skip activation when an explicit emsdk path is configured.
+    if (!is_canvaskit && skia_emsdk_dir == "") {
       deps = [ "//gn/toolchain/emsdk:activate(//gn/toolchain:$host_toolchain)" ]
     }
   }
