@@ -479,8 +479,12 @@ if (is_wasm) {
     }
     link = cxx
 
-    # rust-skia: skip activation when an explicit emsdk path is configured.
-    if (!is_canvaskit && skia_emsdk_dir == "") {
+    # rust-skia: skip emsdk activation for non-canvaskit wasm builds.
+    # The rust-skia wasm32-unknown-unknown flow uses explicitly configured
+    # target tools (for example WASI SDK clang) and does not require emsdk.
+    # Original condition:
+    # if (!is_canvaskit && skia_emsdk_dir == "") {
+    if (!is_canvaskit && false) {
       deps = [ "//gn/toolchain/emsdk:activate(//gn/toolchain:$host_toolchain)" ]
     }
   }
