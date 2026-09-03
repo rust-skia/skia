@@ -7,12 +7,13 @@
 
 from __future__ import print_function
 
+import shlex
 import subprocess
 import sys
 cc, cxx = sys.argv[1:3]
 
-if (b'clang' in subprocess.check_output([cc, '--version']) and
-    b'clang' in subprocess.check_output([cxx, '--version'])):
+if (b'clang' in subprocess.check_output(shlex.split(cc) + ['--version']) and
+    b'clang' in subprocess.check_output(shlex.split(cxx) + ['--version'])):
   print('true')
 else:
   print('false')
