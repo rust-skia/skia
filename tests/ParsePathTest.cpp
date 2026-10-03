@@ -11,6 +11,7 @@
 #include "include/core/SkScalar.h"
 #include "include/core/SkString.h"
 #include "include/utils/SkParsePath.h"
+#include "src/core/SkAutoLocaleSetter.h"
 #include "tests/Test.h"
 
 #include <array>
@@ -126,6 +127,16 @@ DEF_TEST(ParsePathOptionalCommand, r) {
         REPORTER_ASSERT(r, path.has_value());
         REPORTER_ASSERT(r, path->countVerbs() == gTests[i].fVerbs);
         REPORTER_ASSERT(r, path->countPoints() == gTests[i].fPoints);
+    }
+}
+
+DEF_SERIAL_TEST(ParsePathLocale, reporter) {
+    SkAutoLocaleSetter locale("de_DE.UTF-8");
+    const auto expected = SkPathBuilder().moveTo(4.5f, 7).lineTo(19.5f, 7).detach();
+
+    for (const char* svg : {"M4.5 7h15", "M+4.5e0 7h1.5e1"}) {
+        auto path = SkParsePath::FromSVGString(svg);
+        REPORTER_ASSERT(reporter, path.has_value() && *path == expected);
     }
 }
 
