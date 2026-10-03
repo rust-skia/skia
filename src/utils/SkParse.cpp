@@ -9,7 +9,9 @@
 #include "include/core/SkTypes.h"
 #include "include/private/SkTo.h"
 #include "include/utils/SkParse.h"
+#include "src/core/SkAutoLocaleSetter.h"
 
+#include <charconv>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -178,6 +180,53 @@ const char* SkParse::FindScalar(const char str[], SkScalar* value) {
     SkASSERT(str);
     str = skip_ws(str);
 
+#if defined(__cpp_lib_to_chars)
+    const char* number = str;
+    if (*number == '+') {
+        ++number;
+        if (*number == '-' || *number == '+') {
+            return nullptr;
+        }
+    }
+
+    // Bound the conversion to one number, not the remaining SVG path.
+    const char* end = number;
+    if (*end == '-') {
+        ++end;
+    }
+    while (is_digit(*end)) {
+        ++end;
+    }
+    if (*end == '.') {
+        ++end;
+        while (is_digit(*end)) {
+            ++end;
+        }
+    }
+    if (*end == 'e' || *end == 'E') {
+        ++end;
+        if (*end == '+' || *end == '-') {
+            ++end;
+        }
+        while (is_digit(*end)) {
+            ++end;
+        }
+    }
+
+    if (*end != 'x' && *end != 'X') {
+        double parsed;
+        const auto result = std::from_chars(number, end, parsed);
+        if (result.ec == std::errc{}) {
+            if (value) {
+                *value = static_cast<SkScalar>(parsed);
+            }
+            return result.ptr;
+        }
+    }
+#endif
+
+    // Preserve strtod behavior for hexadecimal, special, and out-of-range values.
+    SkAutoLocaleSetter locale("C");
     char* stop;
     float v = (float)strtod(str, &stop);
     if (str == stop) {
