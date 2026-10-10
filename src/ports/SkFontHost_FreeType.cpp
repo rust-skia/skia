@@ -172,7 +172,7 @@ FT_MemoryRec_ gFTMemory = { nullptr, sk_ft_alloc, sk_ft_free, sk_ft_realloc };
 
 class FreeTypeLibrary : SkNoncopyable {
 public:
-    FreeTypeLibrary() : fLibrary(nullptr) {
+    FreeTypeLibrary() : fLibrary(nullptr), fCOLRv1ABIMatches(false) {
         if (FT_New_Library(&gFTMemory, &fLibrary)) {
             return;
         }
@@ -183,6 +183,15 @@ public:
         // Newer versions may still need this, so this test with side effects must come first.
         // The default has changed over time, so this doesn't mean the same thing to all users.
         FT_Library_SetLcdFilter(fLibrary, FT_LCD_FILTER_DEFAULT);
+
+        // FreeType 2.13.0 changed the experimental COLRv1 struct layout without a soname bump,
+        // so COLRv1 is only safe when the loaded library matches the layout of these headers.
+        constexpr bool kHeadersHaveCOLRv1ABI213 =
+                (FREETYPE_MAJOR) > 2 || ((FREETYPE_MAJOR) == 2 && (FREETYPE_MINOR) >= 13);
+        FT_Int major, minor, patch;
+        FT_Library_Version(fLibrary, &major, &minor, &patch);
+        const bool libraryHasCOLRv1ABI213 = major > 2 || (major == 2 && minor >= 13);
+        fCOLRv1ABIMatches = kHeadersHaveCOLRv1ABI213 == libraryHasCOLRv1ABI213;
     }
     ~FreeTypeLibrary() {
         if (fLibrary) {
@@ -191,9 +200,11 @@ public:
     }
 
     FT_Library library() { return fLibrary; }
+    bool colrv1ABIMatches() const { return fCOLRv1ABIMatches; }
 
 private:
     FT_Library fLibrary;
+    bool fCOLRv1ABIMatches;
 
     // FT_Library_SetLcdFilterWeights 2.4.0
     // FT_LOAD_COLOR 2.5.0
@@ -1233,7 +1244,8 @@ SkScalerContext::GlyphMetrics SkScalerContext_FreeType::generateMetrics(const Sk
         SkRect bounds = SkRect::MakeEmpty();
 #ifdef TT_SUPPORT_COLRV1
         FT_OpaquePaint opaqueLayerPaint{nullptr, 1};
-        if (FT_Get_Color_Glyph_Paint(fFace, glyph.getGlyphID(),
+        if (gFTLibrary->colrv1ABIMatches() &&
+            FT_Get_Color_Glyph_Paint(fFace, glyph.getGlyphID(),
                                      FT_COLOR_INCLUDE_ROOT_TRANSFORM, &opaqueLayerPaint)) {
             haveLayers = true;
             mx.extraBits = ScalerContextBits::COLRv1;
