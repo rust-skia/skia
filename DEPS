@@ -37,7 +37,7 @@ deps = {
   # Dawn requires jinja2 and markupsafe for the code generator, abseil for string formatting,
   # and a few other depencencies.
   # When the Dawn revision is updated these should be updated from the Dawn DEPS as well.
-  "third_party/externals/expat"                  : "https://chromium.googlesource.com/external/github.com/libexpat/libexpat.git@a76b1174c1ea52abb639a4c69d52b630a8a106a2",
+  "third_party/externals/expat"                  : "https://chromium.googlesource.com/external/github.com/libexpat/libexpat.git@a70841d9ffa64ddde29ab824ed6305035ebe4c47",
   "third_party/externals/freetype"               : "https://chromium.googlesource.com/chromium/src/third_party/freetype2.git@a5877f48fff8dd6cf8d53c505ce055499376aee2",
   "third_party/externals/harfbuzz"               : "https://chromium.googlesource.com/external/github.com/harfbuzz/harfbuzz.git@12ee77ee00514c442bcd28f9aa9d56b708c37382",
   "third_party/externals/icu"                    : "https://chromium.googlesource.com/chromium/deps/icu.git@c670d124c9b6aa92c0b492cf543808300e0e6103",
