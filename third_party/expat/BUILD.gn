@@ -28,6 +28,7 @@ if (skia_use_system_expat) {
     sources = [
       "$_src/expat/lib/ascii.h",
       "$_src/expat/lib/asciitab.h",
+      "$_src/expat/lib/entities.h",
       "$_src/expat/lib/expat_external.h",
       "$_src/expat/lib/fallthrough.h",
       "$_src/expat/lib/hash_table.h",
