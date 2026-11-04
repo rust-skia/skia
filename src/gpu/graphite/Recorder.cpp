@@ -311,6 +311,12 @@ SkCanvas* Recorder::makeDeferredCanvas(const SkImageInfo& imageInfo,
                                       imageInfo.colorInfo(),
                                       {},
                                       LoadOp::kLoad);
+    if (!fTargetProxyDevice) {
+        // Device::Make() fails when the target cannot be drawn to with imageInfo, for example
+        // for an invalid or non-renderable textureInfo. SkCanvas requires a device.
+        fTargetProxyData.reset();
+        return nullptr;
+    }
     fTargetProxyCanvas = std::make_unique<SkCanvas>(fTargetProxyDevice);
     return fTargetProxyCanvas.get();
 }
